@@ -135,10 +135,10 @@ export default function HomePage() {
             title: "Say something first",
             body: "Add a message, im not wasting my API credits bruh",
           }
-      : {
-          title: "This server sucks bruhhh",
-          body: "Try again, or just try linkedin.",
-        };
+        : {
+            title: "This server sucks bruhhh",
+            body: "Try again, or just try linkedin.",
+          };
 
   return (
     <>
@@ -150,8 +150,8 @@ export default function HomePage() {
               : "flex min-h-screen flex-1 flex-col transition-all duration-200"
           }
         >
-          <section className="flex-1 px-6 py-8 sm:px-8 sm:py-10 lg:px-[50rem] lg:py-[7rem]">
-            <div className="flex flex-col gap-6 lg:gap-8">
+          <section className="flex-1 px-6 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-[7rem] xl:px-16">
+            <div className="mx-auto flex w-full max-w-[34rem] flex-col gap-6 lg:gap-8">
               <div className="flex items-start justify-between gap-8">
                 <div className="space-y-5">
                   <h1 className="text-[clamp(2rem,5.8vw,3.6rem)] leading-[0.92] font-normal tracking-[-0.08em]">
@@ -179,7 +179,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="max-w-[48rem] space-y-8 text-[0.86rem] leading-[1.6] tracking-[-0.05em] lg:text-[0.81rem]">
+              <div className="w-full space-y-8 text-[0.86rem] leading-[1.6] tracking-[-0.05em] lg:text-[0.81rem]">
                 <Button
                   asChild
                   className="h-auto w-fit rounded-full bg-black px-3 py-1.5 text-[0.86rem] font-medium tracking-[-0.05em] !text-white hover:bg-[rgb(35,35,35)] hover:!text-white lg:text-[0.81rem]"
@@ -188,8 +188,13 @@ export default function HomePage() {
                     resume
                   </a>
                 </Button>
+
                 <p>i&apos;m a computer science student at georgia state.</p>
-                <p>i like building things that feel useful, sharp, and a little unfair.</p>
+                <p>
+                  i like building things that feel useful, sharp, and a little
+                  unfair.
+                </p>
+
                 <div className="space-y-3">
                   <p>right now i&apos;m interested in:</p>
                   <ul className="space-y-1 pl-5">
@@ -200,11 +205,19 @@ export default function HomePage() {
                 </div>
 
                 <div className="space-y-3">
-                  <p className="font-semibold tracking-[-0.08em]">A FEW THINGS:</p>
+                  <p className="font-semibold tracking-[-0.08em]">
+                    A FEW THINGS:
+                  </p>
                   <ul className="space-y-1 pl-5">
-                    <li>built awry, a recession prediction system using macroeconomic data</li>
+                    <li>
+                      built awry, a recession prediction system using
+                      macroeconomic data
+                    </li>
                     <li>trained an ensemble model with 99%+ auroc</li>
-                    <li>building full-stack + ai systems with python, c/c++, and typescript</li>
+                    <li>
+                      building full-stack + ai systems with python, c/c++, and
+                      typescript
+                    </li>
                     <li>shipping projects fast, iterating faster</li>
                   </ul>
                 </div>
@@ -273,23 +286,24 @@ export default function HomePage() {
                     </Button>
                   </div>
                 </div>
-
               </div>
             </div>
           </section>
 
-          <footer className="flex items-center justify-between border-t border-[rgb(130,130,130)] px-6 py-4 text-[1rem] tracking-[-0.08em] sm:px-8 lg:px-[50rem] lg:py-6 lg:text-[0.8rem]">
-            <p>{`©${currentYear} aditauqir made in Atlanta, GA`}</p>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              aria-label="Back to top"
-              className="size-auto rounded-full border-0 p-0 text-[1rem] shadow-none hover:bg-transparent hover:text-[rgb(90,90,90)] lg:text-[0.8rem]"
-            >
-              <ArrowUpIcon className="size-[1rem] lg:size-[0.8rem]" />
-            </Button>
+          <footer className="border-t border-[rgb(130,130,130)] px-6 py-4 text-[1rem] tracking-[-0.08em] sm:px-8 lg:px-12 lg:py-6 lg:text-[0.8rem] xl:px-16">
+            <div className="mx-auto flex w-full max-w-[34rem] items-center justify-between">
+              <p>{`©aditauqir ${currentYear} made in Atlanta, GA`}</p>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                aria-label="Back to top"
+                className="size-auto rounded-full border-0 p-0 text-[1rem] shadow-none hover:bg-transparent hover:text-[rgb(90,90,90)] lg:text-[0.8rem]"
+              >
+                <ArrowUpIcon className="size-[1rem] lg:size-[0.8rem]" />
+              </Button>
+            </div>
           </footer>
         </div>
       </main>
