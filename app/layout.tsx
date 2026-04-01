@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
-import { Source_Code_Pro, Trispace, Geist } from "next/font/google";
+import { Source_Code_Pro, Trispace } from "next/font/google";
 
 import "./globals.css";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Adi Tauqir",
@@ -27,10 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn(trispace.variable, sourceCode.variable, "font-sans", geist.variable)}
-    >
+    <html lang="en" className={`${trispace.variable} ${sourceCode.variable}`}>
       <body>{children}</body>
     </html>
   );
