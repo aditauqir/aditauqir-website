@@ -2,7 +2,14 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { AlertCircleIcon, ArrowUpIcon, CheckCircle2Icon } from "lucide-react";
+import {
+  AlertCircleIcon,
+  ArrowUpIcon,
+  CheckCircle2Icon,
+  CheckIcon,
+  CopyIcon,
+  GlobeIcon,
+} from "lucide-react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,6 +27,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const socialLinks = [
   {
@@ -36,10 +44,18 @@ const socialLinks = [
 
 const projectItems = [
   {
+    value: "zirn",
+    label: "zirn",
+    description:
+      "a local-first ai knowledge workspace for turning messy links, pdfs, screenshots, copied text, notes, and unfinished ideas into structured markdown knowledge. it focuses on durable context, editable vault files, source-aware organization, and ai-assisted compilation instead of temporary chatbot answers.",
+    featured: true,
+  },
+  {
     value: "awry",
     label: "awry",
     description:
       "a recession prediction system that uses macroeconomic data and an ensemble of machine learning models to estimate real-time and forward-looking economic risk. it combines multiple indicators from fred and outputs a calibrated probability rather than a binary signal.",
+    githubHref: "https://github.com/aditauqir/AWRY",
   },
   {
     value: "resume-fx",
@@ -76,7 +92,9 @@ export default function HomePage() {
   const [message, setMessage] = useState("");
   const [sendStatus, setSendStatus] = useState<SendStatus>(null);
   const [isSending, setIsSending] = useState(false);
+  const [copiedProject, setCopiedProject] = useState<string | null>(null);
   const timeoutRef = useRef<number | null>(null);
+  const copyTimeoutRef = useRef<number | null>(null);
 
   const showOverlay = (status: Exclude<SendStatus, null>) => {
     setSendStatus(status);
@@ -122,6 +140,58 @@ export default function HomePage() {
     } finally {
       setIsSending(false);
     }
+  };
+
+  const copyText = async (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "0";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+
+    try {
+      if (document.execCommand("copy")) {
+        return true;
+      }
+    } catch {
+    } finally {
+      document.body.removeChild(textarea);
+    }
+
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const handleCopyGitCommand = async (
+    projectValue: string,
+    githubHref?: string,
+  ) => {
+    if (!githubHref) {
+      return;
+    }
+
+    const didCopy = await copyText(`git pull ${githubHref}`);
+
+    if (!didCopy) {
+      return;
+    }
+
+    if (copyTimeoutRef.current) {
+      window.clearTimeout(copyTimeoutRef.current);
+    }
+
+    setCopiedProject(projectValue);
+    copyTimeoutRef.current = window.setTimeout(() => {
+      setCopiedProject(null);
+      copyTimeoutRef.current = null;
+    }, 1800);
   };
 
   const alertCopy =
@@ -198,6 +268,8 @@ export default function HomePage() {
                 <div className="space-y-3">
                   <p>right now i&apos;m interested in:</p>
                   <ul className="space-y-1 pl-5">
+                    <li>local-first tools for keeping context around</li>
+                    <li>turning messy information into something reusable</li>
                     <li>macroeconomic forecasting</li>
                     <li>ai systems that are useful</li>
                     <li>software that actually does something</li>
@@ -212,6 +284,10 @@ export default function HomePage() {
                     <li>
                       built awry, a recession prediction system using
                       macroeconomic data
+                    </li>
+                    <li>
+                      building zirn, a local-first ai workspace for compiling
+                      messy information into reusable markdown knowledge
                     </li>
                     <li>trained an ensemble model with 99%+ auroc</li>
                     <li>
@@ -231,27 +307,67 @@ export default function HomePage() {
                       <AccordionItem
                         key={projectItem.value}
                         value={projectItem.value}
-                        className="border-border-subtle"
+                        className={cn(
+                          "border-border-subtle",
+                          projectItem.featured && "border-black",
+                        )}
                       >
-                        <AccordionTrigger className="py-3 text-[0.86rem] tracking-[-0.06em] lg:text-[0.81rem]">
+                        <AccordionTrigger
+                          className={cn(
+                            "py-3 text-[0.86rem] tracking-[-0.06em] lg:text-[0.81rem]",
+                            projectItem.featured && "font-semibold text-black",
+                          )}
+                        >
                           {projectItem.label}
                         </AccordionTrigger>
-                        <AccordionContent className="space-y-3 text-[0.8rem] leading-[1.55] tracking-[-0.05em] text-muted-foreground lg:text-[0.76rem]">
+                        <AccordionContent
+                          className={cn(
+                            "space-y-3 text-[0.8rem] leading-[1.55] tracking-[-0.05em] text-muted-foreground lg:text-[0.76rem]",
+                            projectItem.featured && "text-[rgb(55,55,55)]",
+                          )}
+                        >
                           <p>{projectItem.description}</p>
-                          <p>
+                          <div className="flex max-w-full items-center overflow-hidden rounded-lg border border-[rgb(185,190,188)] bg-[#f2f5f4] px-2">
+                            <Input
+                              readOnly
+                              value={
+                                projectItem.githubHref
+                                  ? `git pull ${projectItem.githubHref}`
+                                  : "github link coming soon"
+                              }
+                              aria-label={`${projectItem.label} git command`}
+                              className="h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-[0.76rem] tracking-[-0.05em] text-[rgb(45,45,45)] shadow-none selection:bg-black/10 selection:text-black focus-visible:ring-0 lg:text-[0.72rem]"
+                            />
+                            <Button
+                              type="button"
+                              disabled={!projectItem.githubHref}
+                              onClick={() =>
+                                handleCopyGitCommand(
+                                  projectItem.value,
+                                  projectItem.githubHref,
+                                )
+                              }
+                              aria-label={`Copy ${projectItem.label} git command`}
+                              className="size-7 shrink-0 rounded-md bg-transparent p-0 text-[rgb(85,85,85)] shadow-none hover:bg-[rgb(220,225,223)] hover:text-black disabled:text-[rgb(150,150,150)] disabled:opacity-100"
+                            >
+                              {copiedProject === projectItem.value ? (
+                                <CheckIcon className="size-3.5" />
+                              ) : (
+                                <CopyIcon className="size-3.5" />
+                              )}
+                            </Button>
                             {projectItem.githubHref ? (
                               <Link
                                 href={projectItem.githubHref}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-foreground underline underline-offset-4"
+                                aria-label={`Open ${projectItem.label} GitHub`}
+                                className="inline-flex size-7 shrink-0 items-center justify-center rounded-md bg-transparent p-0 text-[rgb(85,85,85)] no-underline shadow-none transition-all hover:bg-[rgb(220,225,223)] hover:text-black"
                               >
-                                Github
+                                <GlobeIcon className="size-3.5" />
                               </Link>
-                            ) : (
-                              <span className="text-foreground">Github</span>
-                            )}
-                          </p>
+                            ) : null}
+                          </div>
                         </AccordionContent>
                       </AccordionItem>
                     ))}
