@@ -3,9 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import {
-  AlertCircleIcon,
   ArrowUpIcon,
-  CheckCircle2Icon,
   CheckIcon,
   CopyIcon,
   GlobeIcon,
@@ -24,9 +22,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { Input } from "@/components/ui/input";
+import { PointerHighlight } from "@/components/ui/pointer-highlight";
 import { cn } from "@/lib/utils";
 
 const socialLinks = [
@@ -49,6 +48,7 @@ const projectItems = [
     description:
       "a local-first ai knowledge workspace for turning messy links, pdfs, screenshots, copied text, notes, and unfinished ideas into structured markdown knowledge. it focuses on durable context, editable vault files, source-aware organization, and ai-assisted compilation instead of temporary chatbot answers.",
     featured: true,
+    siteHref: "https://www.zirn.app/",
   },
   {
     value: "awry",
@@ -73,74 +73,33 @@ const projectItems = [
   },
 ];
 
+const zirnSiteHref = "https://www.zirn.app/";
+
 const stackItems = [
   "python",
-  "c/c++",
   "typescript",
   "react / next.js",
+  "openai + claude apis",
+  "ollama / mistral / gemini",
+  "rag + semantic retrieval",
+  "ai agents + mcp",
+  "langchain / langgraph",
+  "pytorch / tensorflow",
   "fastapi",
+  "supabase / postgres / mysql",
+  "faiss vector search",
   "redis",
   "docker",
   "linux",
+  "cursor / claude code / codex / windsurf",
+  "github actions",
 ];
 
 const currentYear = new Date().getFullYear();
 
-type SendStatus = "success" | "failed" | "empty" | null;
-
 export default function HomePage() {
-  const [message, setMessage] = useState("");
-  const [sendStatus, setSendStatus] = useState<SendStatus>(null);
-  const [isSending, setIsSending] = useState(false);
   const [copiedProject, setCopiedProject] = useState<string | null>(null);
-  const timeoutRef = useRef<number | null>(null);
   const copyTimeoutRef = useRef<number | null>(null);
-
-  const showOverlay = (status: Exclude<SendStatus, null>) => {
-    setSendStatus(status);
-
-    if (timeoutRef.current) {
-      window.clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = window.setTimeout(() => {
-      setSendStatus(null);
-      timeoutRef.current = null;
-    }, 3600);
-  };
-
-  const handleSend = async () => {
-    const trimmedMessage = message.trim();
-
-    if (!trimmedMessage || isSending) {
-      showOverlay("empty");
-      return;
-    }
-
-    setIsSending(true);
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: trimmedMessage }),
-      });
-
-      if (!response.ok) {
-        showOverlay("failed");
-        return;
-      }
-
-      setMessage("");
-      showOverlay("success");
-    } catch {
-      showOverlay("failed");
-    } finally {
-      setIsSending(false);
-    }
-  };
 
   const copyText = async (text: string) => {
     const textarea = document.createElement("textarea");
@@ -194,38 +153,25 @@ export default function HomePage() {
     }, 1800);
   };
 
-  const alertCopy =
-    sendStatus === "success"
-      ? {
-          title: "Sent the message!",
-          body: "Hold on tight, I will ask my AI SaaS mail platform to look for it, trust.",
-        }
-      : sendStatus === "empty"
-        ? {
-            title: "Say something first",
-            body: "Add a message, im not wasting my API credits bruh",
-          }
-        : {
-            title: "This server sucks bruhhh",
-            body: "Try again, or just try linkedin.",
-          };
-
   return (
     <>
       <main className="flex min-h-screen flex-col bg-background text-foreground">
-        <div
-          className={
-            sendStatus
-              ? "flex min-h-screen flex-1 flex-col blur-sm transition-all duration-200"
-              : "flex min-h-screen flex-1 flex-col transition-all duration-200"
-          }
-        >
+        <div className="flex min-h-screen flex-1 flex-col transition-all duration-200">
           <section className="flex-1 px-6 py-8 sm:px-8 sm:py-10 lg:px-12 lg:py-[7rem] xl:px-16">
             <div className="mx-auto flex w-full max-w-[34rem] flex-col gap-6 lg:gap-8">
               <div className="flex items-start justify-between gap-8">
                 <div className="space-y-5">
                   <h1 className="text-[clamp(2rem,5.8vw,3.6rem)] leading-[0.92] font-normal tracking-[-0.08em]">
-                    hi, i&apos;m Adi
+                    <span>hi, i&apos;m </span>
+                    <PointerHighlight
+                      rectangleClassName="border-black"
+                      pointerClassName="text-black"
+                      containerClassName="inline-flex align-baseline"
+                    >
+                      <span className="relative z-10 inline-block px-1">
+                        Adi
+                      </span>
+                    </PointerHighlight>
                   </h1>
                   <HomeClock />
                 </div>
@@ -258,6 +204,22 @@ export default function HomePage() {
                     resume
                   </a>
                 </Button>
+                <div className="w-fit space-y-4 py-2">
+                  <p className="text-[0.76rem] leading-[1.4] tracking-[-0.05em] text-muted-foreground">
+                    A startup im working on
+                  </p>
+                  <HoverBorderGradient
+                    as="a"
+                    href={zirnSiteHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    duration={0.8}
+                    containerClassName="rounded-full border-0 bg-transparent"
+                    className="flex items-center border border-black bg-background px-3 py-1.5 text-[0.86rem] font-medium tracking-[-0.05em] !text-black lg:text-[0.81rem]"
+                  >
+                    zirn.app
+                  </HoverBorderGradient>
+                </div>
 
                 <p>i&apos;m a computer science student at georgia state.</p>
                 <p>
@@ -302,7 +264,12 @@ export default function HomePage() {
                   <p className="font-semibold tracking-[-0.08em]">
                     SOME THINGS I&apos;M WORKING ON:
                   </p>
-                  <Accordion type="single" collapsible className="w-full">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    defaultValue="zirn"
+                    className="w-full"
+                  >
                     {projectItems.map((projectItem) => (
                       <AccordionItem
                         key={projectItem.value}
@@ -327,36 +294,31 @@ export default function HomePage() {
                           )}
                         >
                           <p>{projectItem.description}</p>
-                          <div className="flex max-w-full items-center overflow-hidden rounded-lg border border-[rgb(185,190,188)] bg-[#f2f5f4] px-2">
-                            <Input
-                              readOnly
-                              value={
-                                projectItem.githubHref
-                                  ? `git pull ${projectItem.githubHref}`
-                                  : "github link coming soon"
-                              }
-                              aria-label={`${projectItem.label} git command`}
-                              className="h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-[0.76rem] tracking-[-0.05em] text-[rgb(45,45,45)] shadow-none selection:bg-black/10 selection:text-black focus-visible:ring-0 lg:text-[0.72rem]"
-                            />
-                            <Button
-                              type="button"
-                              disabled={!projectItem.githubHref}
-                              onClick={() =>
-                                handleCopyGitCommand(
-                                  projectItem.value,
-                                  projectItem.githubHref,
-                                )
-                              }
-                              aria-label={`Copy ${projectItem.label} git command`}
-                              className="size-7 shrink-0 rounded-md bg-transparent p-0 text-[rgb(85,85,85)] shadow-none hover:bg-[rgb(220,225,223)] hover:text-black disabled:text-[rgb(150,150,150)] disabled:opacity-100"
-                            >
-                              {copiedProject === projectItem.value ? (
-                                <CheckIcon className="size-3.5" />
-                              ) : (
-                                <CopyIcon className="size-3.5" />
-                              )}
-                            </Button>
-                            {projectItem.githubHref ? (
+                          {projectItem.githubHref ? (
+                            <div className="flex max-w-full items-center overflow-hidden rounded-lg border border-[rgb(185,190,188)] bg-[#f2f5f4] px-2">
+                              <Input
+                                readOnly
+                                value={`git pull ${projectItem.githubHref}`}
+                                aria-label={`${projectItem.label} git command`}
+                                className="h-8 min-w-0 flex-1 border-0 bg-transparent px-0 text-[0.76rem] tracking-[-0.05em] text-[rgb(45,45,45)] shadow-none selection:bg-black/10 selection:text-black focus-visible:ring-0 lg:text-[0.72rem]"
+                              />
+                              <Button
+                                type="button"
+                                onClick={() =>
+                                  handleCopyGitCommand(
+                                    projectItem.value,
+                                    projectItem.githubHref,
+                                  )
+                                }
+                                aria-label={`Copy ${projectItem.label} git command`}
+                                className="size-7 shrink-0 rounded-md bg-transparent p-0 text-[rgb(85,85,85)] shadow-none hover:bg-[rgb(220,225,223)] hover:text-black"
+                              >
+                                {copiedProject === projectItem.value ? (
+                                  <CheckIcon className="size-3.5" />
+                                ) : (
+                                  <CopyIcon className="size-3.5" />
+                                )}
+                              </Button>
                               <Link
                                 href={projectItem.githubHref}
                                 target="_blank"
@@ -366,8 +328,8 @@ export default function HomePage() {
                               >
                                 <GlobeIcon className="size-3.5" />
                               </Link>
-                            ) : null}
-                          </div>
+                            </div>
+                          ) : null}
                         </AccordionContent>
                       </AccordionItem>
                     ))}
@@ -381,26 +343,6 @@ export default function HomePage() {
                       <li key={stackItem}>{stackItem}</li>
                     ))}
                   </ul>
-                </div>
-
-                <div className="space-y-3">
-                  <p>Say hi, hello, yo :3</p>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      value={message}
-                      onChange={(event) => setMessage(event.target.value)}
-                      placeholder="say hi"
-                      aria-label="Say hi"
-                      className="h-9 max-w-[14rem] rounded-full border-black px-3 text-[0.86rem] tracking-[-0.05em] placeholder:text-[rgb(153,151,151)] lg:max-w-[12rem] lg:text-[0.81rem]"
-                    />
-                    <Button
-                      type="button"
-                      onClick={handleSend}
-                      className="h-auto rounded-full bg-black px-3 py-1.5 text-[0.86rem] font-medium tracking-[-0.05em] !text-white hover:bg-[rgb(35,35,35)] hover:!text-white lg:text-[0.81rem]"
-                    >
-                      {isSending ? "sending" : "send"}
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -423,27 +365,6 @@ export default function HomePage() {
           </footer>
         </div>
       </main>
-
-      {sendStatus ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/35 px-6">
-          <Alert
-            variant={sendStatus === "success" ? "default" : "destructive"}
-            className="max-w-[25rem] rounded-[1.4rem] border-black/10 bg-white px-[0.9rem] py-[0.9rem] shadow-[0_24px_80px_rgba(0,0,0,0.12)]"
-          >
-            {sendStatus === "success" ? (
-              <CheckCircle2Icon className="text-[#11260e]" />
-            ) : (
-              <AlertCircleIcon />
-            )}
-            <AlertTitle className="text-[1rem] font-bold tracking-[-0.08em]">
-              {alertCopy.title}
-            </AlertTitle>
-            <AlertDescription className="mt-1 text-[0.88rem] leading-[1.5] tracking-[-0.06em] text-[rgb(90,90,90)]">
-              {alertCopy.body}
-            </AlertDescription>
-          </Alert>
-        </div>
-      ) : null}
     </>
   );
 }
