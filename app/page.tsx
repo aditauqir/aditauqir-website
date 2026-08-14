@@ -15,6 +15,7 @@ import {
   faSquareLinkedin,
 } from "@fortawesome/free-brands-svg-icons";
 
+import GsuLocationHover from "@/components/GsuLocationHover";
 import HomeClock from "@/components/HomeClock";
 import {
   Accordion,
@@ -75,6 +76,15 @@ const projectItems = [
 
 const zirnSiteHref = "https://www.zirn.app/";
 
+const howIBuildItems = [
+  "start with the problem",
+  "build the smallest version that proves something.",
+  "measure what breaks.",
+  "throw away bad assumptions.",
+  "iterate fast.",
+  "keep the parts that actually work.",
+];
+
 const stackItems = [
   "python",
   "typescript",
@@ -90,6 +100,9 @@ const stackItems = [
   "faiss vector search",
   "redis",
   "docker",
+  "aws / s3 / ec2",
+  "azure",
+  "vercel",
   "linux",
   "cursor / claude code / codex / windsurf",
   "github actions",
@@ -214,14 +227,17 @@ export default function HomePage() {
                     target="_blank"
                     rel="noreferrer"
                     duration={0.8}
-                    containerClassName="rounded-full border-0 bg-transparent"
-                    className="flex items-center border border-black bg-background px-3 py-1.5 text-[0.86rem] font-medium tracking-[-0.05em] !text-black lg:text-[0.81rem]"
+                    containerClassName="rounded-full border-0 bg-transparent shadow-none"
+                    className="flex items-center border border-black bg-background px-3 py-1.5 text-[0.86rem] font-medium tracking-[-0.05em] !text-black shadow-none lg:text-[0.81rem]"
                   >
                     zirn.app
                   </HoverBorderGradient>
                 </div>
 
-                <p>i&apos;m a computer science student at georgia state.</p>
+                <p className="relative z-[100]">
+                  i&apos;m a computer science student pursuing B.S./M.S. at{" "}
+                  <GsuLocationHover />
+                </p>
                 <p>
                   i like building things that feel useful, sharp, and a little
                   unfair.
@@ -334,6 +350,26 @@ export default function HomePage() {
                       </AccordionItem>
                     ))}
                   </Accordion>
+                </div>
+
+                <div className="space-y-3">
+                  <p className="font-semibold tracking-[-0.08em]">
+                    HOW I BUILD:
+                  </p>
+                  <ul className="space-y-1 pl-5">
+                    {howIBuildItems.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p>
+                    i&apos;m not particularly interested in building demos that
+                    look intelligent.
+                  </p>
+                  <p>
+                    i want to build software that remembers, predicts,
+                    automates, or gives someone leverage they didn&apos;t have
+                    before.
+                  </p>
                 </div>
 
                 <div className="space-y-3">

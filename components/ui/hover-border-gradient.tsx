@@ -69,36 +69,35 @@ export function HoverBorderGradient({
       }}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex h-min w-fit flex-col flex-nowrap content-center items-center justify-center gap-10 overflow-visible rounded-full border bg-black/10 p-px decoration-clone transition duration-500 hover:bg-black/15",
+        "relative isolate flex h-min w-fit items-center justify-center overflow-hidden rounded-full border bg-transparent p-px transition duration-500",
         containerClassName,
       )}
       {...props}
     >
       <div
         className={cn(
-          "z-10 w-auto rounded-[inherit] bg-black px-4 py-2 text-white",
+          "relative z-10 w-auto rounded-[inherit] bg-background px-4 py-2 text-foreground",
           className,
         )}
       >
         {children}
       </div>
-      <motion.div
-        className="absolute inset-0 z-0 flex-none overflow-hidden rounded-[inherit]"
-        style={{
-          filter: "blur(2px)",
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-        }}
-        initial={{ background: movingMap[direction] }}
-        animate={{
-          background: hovered
-            ? [movingMap[direction], highlight]
-            : movingMap[direction],
-        }}
-        transition={{ ease: "linear", duration: duration ?? 1 }}
-      />
-      <div className="absolute inset-[2px] z-1 flex-none rounded-[100px] bg-black" />
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[inherit]">
+        <motion.div
+          className="absolute inset-0 rounded-[inherit]"
+          style={{
+            filter: "blur(2px)",
+          }}
+          initial={{ background: movingMap[direction] }}
+          animate={{
+            background: hovered
+              ? [movingMap[direction], highlight]
+              : movingMap[direction],
+          }}
+          transition={{ ease: "linear", duration: duration ?? 1 }}
+        />
+      </div>
+      <div className="pointer-events-none absolute inset-[2px] z-[1] rounded-[inherit] bg-background" />
     </Tag>
   );
 }
