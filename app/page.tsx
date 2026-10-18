@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowUpIcon,
@@ -11,9 +11,11 @@ import {
 } from "lucide-react";
 
 import AdiNoorHover from "@/components/AdiNoorHover";
+import FollowHoverPreview from "@/components/FollowHoverPreview";
 import GsuLocationHover from "@/components/GsuLocationHover";
 import HomeClock from "@/components/HomeClock";
 import ResumeHoverPreview from "@/components/ResumeHoverPreview";
+import SiteBackground from "@/components/SiteBackground";
 import {
   Accordion,
   AccordionContent,
@@ -42,6 +44,40 @@ function GithubPixelIcon({ className }: { className?: string }) {
         d="M2 12h2v-1H3v-1H2V9H1V8h1v1h1v1h1V9h1V8H3V7H2V4h1V2h1v1h3V2h1v2h1v3H8v1H6v1h1v3h2v-1h1v-1h1V3h-1V2H9V1H2v1H1v1H0v7h1v1h1Zm0 0"
       />
     </svg>
+  );
+}
+
+function interactionCueProps(isMobileDevice: boolean) {
+  return isMobileDevice
+    ? { "data-cuelume-tap": "tap" as const }
+    : { "data-cuelume-select": "select" as const };
+}
+
+function ProjectJump({
+  value,
+  onJump,
+  children,
+  isMobileDevice,
+}: {
+  value: string;
+  onJump: (value: string) => void;
+  children: ReactNode;
+  isMobileDevice: boolean;
+}) {
+  return (
+    <a
+      href={`#project-${value}`}
+      onClick={(event) => {
+        event.preventDefault();
+        onJump(value);
+      }}
+      {...interactionCueProps(isMobileDevice)}
+      className="group cursor-pointer font-medium text-neutral-950"
+    >
+      <span className="underline decoration-neutral-700 decoration-dashed underline-offset-[3px] transition-colors group-hover:text-black group-hover:decoration-black">
+        {children}
+      </span>
+    </a>
   );
 }
 
@@ -77,7 +113,33 @@ const socialLinks = [
   },
 ];
 
+function StarGlyph({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 1024 1024"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M0 0h1024v1024H0z" fill="none" />
+      <path
+        fill="currentColor"
+        d="m908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5c-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1l-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2c17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9l183.7-179.1c5-4.9 8.3-11.3 9.3-18.3c2.7-17.5-9.5-33.7-27-36.3M664.8 561.6l36.1 210.3L512 672.7L323.1 772l36.1-210.3l-152.8-149L417.6 382L512 190.7L606.4 382l211.2 30.7z"
+      />
+    </svg>
+  );
+}
+
 const projectItems = [
+  {
+    value: "fyp",
+    label: "fyoutubepremium",
+    description:
+      "an orion browser extension for iphone that loads desktop youtube and restyles it into a phone-friendly player with background playback and screen-off audio. ublock origin handles ads, so it gets closer to youtube premium without the subscription.",
+    githubHref: "https://github.com/aditauqir/fyp",
+  },
   {
     value: "zirn",
     label: "zirn",
@@ -87,18 +149,18 @@ const projectItems = [
     siteHref: "https://www.zirn.app/",
   },
   {
+    value: "shev",
+    label: "shev",
+    description:
+      "a simple decision maker without the hype. paste one whole message, say what you want done, and it returns one decision as json: what to do, whether to act, and how sure it is. it can run a small model locally on a mac or call deepseek, and other tools can read the saved decisions over mcp.",
+    githubHref: "https://github.com/aditauqir/shev",
+  },
+  {
     value: "kaiko",
     label: "kaiko",
     description:
       "an autonomous, psychometrically-calibrated adaptive learning companion for obsidian. it pairs a local agent control plane with a rasch 1pl item response theory engine to run computerized adaptive diagnostics, estimate latent ability (θ), and scaffold structured markdown instruction directly into your vault.",
     githubHref: "https://github.com/aditauqir/kaiko",
-  },
-  {
-    value: "fyp",
-    label: "fyoutubepremium",
-    description:
-      "an orion browser extension for iphone that loads desktop youtube and restyles it into a phone-friendly player with background playback and screen-off audio. ublock origin handles ads, so it gets closer to youtube premium without the subscription.",
-    githubHref: "https://github.com/aditauqir/fyp",
   },
   {
     value: "awry",
@@ -123,15 +185,41 @@ const projectItems = [
   },
 ];
 
-const fypGithubHref = "https://github.com/aditauqir/fyp";
+const passionProjects: {
+  value: string;
+  label: string;
+  href: string;
+  stars: number;
+  previewSrc?: string;
+  previewAlt?: string;
+  previewWidth?: number;
+  previewHeight?: number;
+}[] = [
+  {
+    value: "fyp",
+    label: "fyoutubepremium",
+    href: "https://github.com/aditauqir/fyp",
+    stars: 21,
+  },
+  {
+    value: "shev",
+    label: "shev",
+    href: "https://github.com/aditauqir/shev",
+    stars: 4,
+    previewSrc: "/shev-preview.png",
+    previewAlt: "shev — jev without the hype",
+    previewWidth: 320,
+    previewHeight: 200,
+  },
+];
 
 const howIBuildItems = [
-  "start with the problem",
-  "build the smallest version that proves something.",
-  "measure what breaks.",
-  "throw away bad assumptions.",
-  "iterate fast.",
-  "keep the parts that actually work.",
+  "start with the real problem, not a cool idea",
+  "build the smallest thing that proves it works",
+  "use it until something breaks",
+  "throw away the assumptions that were wrong",
+  "fix it fast and dont get attached",
+  "keep only the parts that still help",
 ];
 
 const stackItems = [
@@ -162,7 +250,7 @@ const currentYear = new Date().getFullYear();
 
 export default function HomePage() {
   const [copiedProject, setCopiedProject] = useState<string | null>(null);
-  const [activeAccordion, setActiveAccordion] = useState<string>("zirn");
+  const [activeAccordion, setActiveAccordion] = useState<string>("fyp");
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const copyTimeoutRef = useRef<number | null>(null);
 
@@ -255,77 +343,7 @@ export default function HomePage() {
   return (
     <>
       <main className="relative flex min-h-screen min-h-[100dvh] flex-col bg-transparent text-neutral-900">
-        {/* Full-bleed lavender sunset background */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none fixed -top-[10vh] -bottom-[10vh] -left-[2vw] -right-[2vw] z-0 select-none overflow-hidden bg-white"
-        >
-          {/* Base sharp background */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/site-bg.jpg"
-            alt=""
-            className={cn(
-              "h-full w-full object-cover object-center transition-opacity duration-300",
-              isMobileDevice ? "opacity-65" : "opacity-65 sm:opacity-100",
-            )}
-          />
-
-          {/* Soft atmospheric background blur around text when in lower 50% of viewport */}
-          <div
-            className={cn(
-              "absolute inset-0 overflow-hidden transition-opacity duration-300",
-              isMobileDevice ? "opacity-75" : "opacity-75 sm:opacity-100",
-            )}
-            style={{
-              maskImage:
-                "linear-gradient(to bottom, transparent 0%, transparent 42%, black 52%, black 100%)",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, transparent 0%, transparent 42%, black 52%, black 100%)",
-            }}
-          >
-            {/* Horizontal mask centered around the text column */}
-            <div
-              className="absolute inset-0 overflow-hidden"
-              style={{
-                maskImage:
-                  "radial-gradient(ellipse 26rem 100% at 50% 50%, black 50%, transparent 100%)",
-                WebkitMaskImage:
-                  "radial-gradient(ellipse 26rem 100% at 50% 50%, black 50%, transparent 100%)",
-              }}
-            >
-              {/* Blurred background image layer, pixel-aligned with base image */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/site-bg.jpg"
-                alt=""
-                className="h-full w-full object-cover object-center scale-[1.03]"
-                style={{
-                  filter: "blur(18px)",
-                  WebkitFilter: "blur(18px)",
-                }}
-              />
-              {/* Subtle glass luminescence around text column */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(ellipse 22rem 100% at 50% 50%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 75%, transparent 100%)",
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Mobile-only white translucent wash overlay: makes background whiter with clean transparency ONLY on mobile */}
-          <div
-            className={cn(
-              "pointer-events-none absolute inset-0 transition-opacity duration-300",
-              isMobileDevice
-                ? "bg-gradient-to-b from-white/30 via-white/40 to-white/55 opacity-100"
-                : "bg-gradient-to-b from-white/30 via-white/40 to-white/55 sm:hidden",
-            )}
-          />
-        </div>
+        <SiteBackground isMobileDevice={isMobileDevice} />
 
         <div className="relative z-10 flex min-h-screen min-h-[100dvh] flex-1 flex-col transition-all duration-200">
           <section className="flex-1 px-5 pt-[calc(env(safe-area-inset-top)+2.5rem)] pb-12 sm:px-8 sm:py-12 lg:px-12 lg:py-[7rem] xl:px-16">
@@ -358,6 +376,7 @@ export default function HomePage() {
                           aria-label={socialLink.label}
                           target="_blank"
                           rel="noreferrer"
+                          {...interactionCueProps(isMobileDevice)}
                           className="flex items-center justify-center text-neutral-900 transition-all duration-200 hover:scale-110 hover:text-black hover:opacity-70"
                         >
                           <Icon className="size-7 shrink-0" />
@@ -381,80 +400,94 @@ export default function HomePage() {
                 </p>
 
                 <p>
-                  i don&apos;t build demos that just look intelligent—i build
-                  software that grants real leverage: local-first knowledge
-                  workspaces (
-                  <a
-                    href="#project-zirn"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      jumpToProject("zirn");
-                    }}
-                    className="group cursor-pointer font-medium text-neutral-950"
+                  looking smart is easy. being useful is the hard part. so i
+                  keep building things i need:{" "}
+                  <ProjectJump
+                    value="zirn"
+                    onJump={jumpToProject}
+                    isMobileDevice={isMobileDevice}
                   >
-                    <span className="underline decoration-neutral-700 decoration-dashed underline-offset-[3px] transition-colors group-hover:text-black group-hover:decoration-black">
-                      zirn
-                    </span>
-                  </a>
-                  ), autonomous adaptive learning agents (
-                  <a
-                    href="#project-kaiko"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      jumpToProject("kaiko");
-                    }}
-                    className="group cursor-pointer font-medium text-neutral-950"
+                    zirn
+                  </ProjectJump>{" "}
+                  for messy notes,{" "}
+                  <ProjectJump
+                    value="kaiko"
+                    onJump={jumpToProject}
+                    isMobileDevice={isMobileDevice}
                   >
-                    <span className="underline decoration-neutral-700 decoration-dashed underline-offset-[3px] transition-colors group-hover:text-black group-hover:decoration-black">
-                      kaiko
-                    </span>
-                  </a>
-                  ), and custom browser runtimes for unfair utility (
-                  <a
-                    href="#project-fyp"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      jumpToProject("fyp");
-                    }}
-                    className="group cursor-pointer font-medium text-neutral-950"
+                    kaiko
+                  </ProjectJump>{" "}
+                  for learning that adjusts,{" "}
+                  <ProjectJump
+                    value="fyp"
+                    onJump={jumpToProject}
+                    isMobileDevice={isMobileDevice}
                   >
-                    <span className="underline decoration-neutral-700 decoration-dashed underline-offset-[3px] transition-colors group-hover:text-black group-hover:decoration-black">
-                      fyoutubepremium
-                    </span>
-                  </a>
-                  ).
+                    fyoutubepremium
+                  </ProjectJump>{" "}
+                  so i dont pay for background playback, and{" "}
+                  <ProjectJump
+                    value="shev"
+                    onJump={jumpToProject}
+                    isMobileDevice={isMobileDevice}
+                  >
+                    shev
+                  </ProjectJump>{" "}
+                  when i just need a yes, a no, or a reply. i also care how it
+                  feels in the hand. spacing, type, motion, the quiet stuff. a
+                  product is only as good as how it feels to use.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-1.5 py-0.5 text-[0.76rem] leading-[1.4]">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 py-0.5 text-[0.76rem] leading-[1.4]">
                   <span className="text-neutral-700">
-                    A passion project im working on:
+                    passion projects im working on:
                   </span>
-                  <a
-                    href={fypGithubHref}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group inline-flex cursor-pointer items-center gap-1.5 font-medium text-neutral-950"
-                  >
-                    <span className="underline decoration-neutral-700 decoration-dashed underline-offset-[3px] transition-colors group-hover:text-black group-hover:decoration-black">
-                      fyoutubepremium
-                    </span>
-                    <span className="inline-flex items-center gap-0.5 text-[0.74rem] text-neutral-600 transition-colors group-hover:text-black">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1em"
-                        height="1em"
-                        viewBox="0 0 1024 1024"
-                        className="size-3.5 fill-current"
+                  {passionProjects.map((project) => {
+                    const link = (
+                      <a
+                        href={project.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        {...interactionCueProps(isMobileDevice)}
+                        className="group inline-flex cursor-pointer items-center gap-1.5 font-medium text-neutral-950"
                       >
-                        <path d="M0 0h1024v1024H0z" fill="none" />
-                        <path
-                          fill="currentColor"
-                          d="m908.1 353.1l-253.9-36.9L540.7 86.1c-3.1-6.3-8.2-11.4-14.5-14.5c-15.8-7.8-35-1.3-42.9 14.5L369.8 316.2l-253.9 36.9c-7 1-13.4 4.3-18.3 9.3a32.05 32.05 0 0 0 .6 45.3l183.7 179.1l-43.4 252.9a31.95 31.95 0 0 0 46.4 33.7L512 754l227.1 119.4c6.2 3.3 13.4 4.4 20.3 3.2c17.4-3 29.1-19.5 26.1-36.9l-43.4-252.9l183.7-179.1c5-4.9 8.3-11.3 9.3-18.3c2.7-17.5-9.5-33.7-27-36.3M664.8 561.6l36.1 210.3L512 672.7L323.1 772l36.1-210.3l-152.8-149L417.6 382L512 190.7L606.4 382l211.2 30.7z"
-                        />
-                      </svg>
-                      <span>21 stars</span>
-                    </span>
-                  </a>
+                        <span className="underline decoration-neutral-700 decoration-dashed underline-offset-[3px] transition-colors group-hover:text-black group-hover:decoration-black">
+                          {project.label}
+                        </span>
+                        <span className="inline-flex items-center gap-0.5 text-[0.74rem] text-neutral-600 transition-colors group-hover:text-black">
+                          <StarGlyph className="size-3.5 fill-current" />
+                          <span>{project.stars} stars</span>
+                        </span>
+                      </a>
+                    );
+
+                    if (!project.previewSrc) {
+                      return (
+                        <span key={project.label} className="inline-flex">
+                          {link}
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <FollowHoverPreview
+                        key={project.label}
+                        className="inline-flex align-baseline"
+                        width={project.previewWidth ?? 320}
+                        height={project.previewHeight ?? 200}
+                        preview={
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={project.previewSrc}
+                            alt={project.previewAlt ?? project.label}
+                            className="pointer-events-none h-full w-full select-none object-cover"
+                          />
+                        }
+                      >
+                        {link}
+                      </FollowHoverPreview>
+                    );
+                  })}
                 </div>
 
                 <p className="text-neutral-950">
@@ -462,6 +495,21 @@ export default function HomePage() {
                 </p>
 
                 <div className="space-y-8">
+                  <div className="space-y-3">
+                    <p className="font-semibold text-neutral-950">
+                      MY PHILOSOPHY:
+                    </p>
+                    <p className="text-neutral-800">
+                      i dont care if a project looks intelligent. most of what i
+                      see is a demo that breaks on real work. i want software
+                      that stays on my computer, remembers the work i already
+                      did, and takes the boring part off my plate. if it doesnt
+                      save time or make a decision clearer, i shouldnt have
+                      built it. a product is only as good as how it feels to
+                      use.
+                    </p>
+                  </div>
+
                   <div className="space-y-3">
                     <p className="font-semibold text-neutral-950">
                       A FEW THINGS:
@@ -480,6 +528,10 @@ export default function HomePage() {
                         building fyoutubepremium, an ios browser extension
                         delivering ad-free background playback and screen-off
                         audio
+                      </li>
+                      <li>
+                        building shev, a small decision maker that takes one
+                        message and hands back one json decision
                       </li>
                       <li>
                         built awry, a recession prediction system using
@@ -515,6 +567,7 @@ export default function HomePage() {
                         )}
                       >
                         <AccordionTrigger
+                          {...interactionCueProps(isMobileDevice)}
                           className={cn(
                             "py-3 text-[0.86rem] text-neutral-950 lg:text-[0.81rem]",
                             projectItem.featured && "font-semibold text-black",
@@ -534,6 +587,7 @@ export default function HomePage() {
                               href={projectItem.siteHref}
                               target="_blank"
                               rel="noreferrer"
+                              {...interactionCueProps(isMobileDevice)}
                               className="inline-flex items-center gap-1 font-medium text-black underline decoration-black underline-offset-2"
                             >
                               zirn.app
@@ -561,6 +615,7 @@ export default function HomePage() {
                                   )
                                 }
                                 aria-label={`Copy ${projectItem.label} git command`}
+                                {...interactionCueProps(isMobileDevice)}
                                 className="size-7 shrink-0 rounded-md bg-transparent p-0 text-neutral-700 shadow-none hover:bg-black/10 hover:text-black"
                               >
                                 {copiedProject === projectItem.value ? (
@@ -574,6 +629,7 @@ export default function HomePage() {
                                 target="_blank"
                                 rel="noreferrer"
                                 aria-label={`Open ${projectItem.label} GitHub`}
+                                {...interactionCueProps(isMobileDevice)}
                                 className="inline-flex size-7 shrink-0 items-center justify-center rounded-md bg-transparent p-0 text-neutral-700 no-underline shadow-none transition-all hover:bg-black/10 hover:text-black"
                               >
                                 <GlobeIcon className="size-3.5" />
@@ -595,15 +651,6 @@ export default function HomePage() {
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
-                  <p className="text-neutral-800">
-                    i&apos;m not particularly interested in building demos that
-                    look intelligent.
-                  </p>
-                  <p className="text-neutral-800">
-                    i want to build software that remembers, predicts,
-                    automates, or gives someone leverage they didn&apos;t have
-                    before.
-                  </p>
                 </div>
 
                 <div className="space-y-3">
@@ -628,6 +675,7 @@ export default function HomePage() {
                 size="icon"
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                 aria-label="Back to top"
+                {...interactionCueProps(isMobileDevice)}
                 className="size-auto rounded-full border-0 p-0 text-[1rem] text-black shadow-none transition-transform hover:scale-110 hover:bg-transparent hover:text-black/70 active:scale-95 lg:text-[0.8rem]"
               >
                 <ArrowUpIcon className="size-[1rem] text-black lg:size-[0.8rem]" />

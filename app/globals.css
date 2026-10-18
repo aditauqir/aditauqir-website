@@ -98,18 +98,7 @@
 html {
   min-height: 100%;
   min-height: 100dvh;
-  background-color: #a8b4ce;
-  background-image: linear-gradient(
-    to bottom,
-    #a8b4ce 0%,
-    #b8b8c8 25%,
-    #cfbfc5 50%,
-    #9b8286 75%,
-    #654747 100%
-  );
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-color: #ffffff;
   color: var(--foreground);
   scroll-behavior: auto;
   transition-timing-function: cubic-bezier(0, 0, 0.58, 1);

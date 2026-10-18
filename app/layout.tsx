@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Source_Code_Pro } from "next/font/google";
 
+import CuelumeSounds from "@/components/CuelumeSounds";
 import { generalSans, redaction10 } from "./fonts";
 import "./globals.css";
 
@@ -30,7 +31,10 @@ export default function RootLayout({
       lang="en"
       className={`${generalSans.variable} ${sourceCode.variable} ${redaction10.variable}`}
     >
-      <body className={generalSans.className}>{children}</body>
+      <body className={generalSans.className}>
+        <CuelumeSounds />
+        {children}
+      </body>
     </html>
   );
 }
